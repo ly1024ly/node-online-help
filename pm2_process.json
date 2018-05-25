@@ -1,0 +1,15 @@
+{
+	"apps": [{
+		"name": "nc-service-template-api",
+		"script": "./bin/www",
+		"instances": "1",
+		"env": {
+			"NODE_ENV": "development"
+		},
+		"env_production": {
+			"NODE_ENV": "production"
+		},
+		"log_date_format": "YYYY-MM-DD HH:mm Z"
+	}]
+
+}
