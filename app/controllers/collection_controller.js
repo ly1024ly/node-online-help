@@ -1,6 +1,8 @@
 'use strict';
 const collection = require('../models/collection_model.js');
+const file = require('../models/file_model.js');
 const util = require('../../common_lib/util');
+var mongolass = require('../../common_lib/db.js');
 
 
 module.exports = {
@@ -8,18 +10,16 @@ module.exports = {
 	 * 保存收藏文件
 	 */
 	create_file: function(req, res) {
-		console.log(req.body)
 		if (util.checkparas(['username', 'ID'], req.body)) {
-			console.log("okokokok")
 			collection.create_file(req.body).then(function(result) {
-				console.log(result)
 				if (result) {
 					res.status(200).json(util.normalsuccess);
 				} else {
-					res.status(200).json(util.saveerror);
+					res.status(200).json(util.added);
 				}
 			}).catch(function(err) {
-				res.status(200).json(util.servererror);
+				console.log(err)
+				res.status(200).json(util.added);
 			});
 
 		} else {
@@ -32,8 +32,6 @@ module.exports = {
 	get_file_all: function(req, res) {
 		if (util.checkparas(['username'], req.query)) {
 			collection.get_file_all(req.query.username).then(function(result) {
-				console.log("===================");
-				console.log(result)
 				if (result) {
 					res.status(200).json({
 						'result': 'success',
@@ -58,9 +56,8 @@ module.exports = {
 	delete_file: function(req, res) {
 		if (util.checkparas(['username', 'ID'], req.body)) {
 			collection.delete_file(req.body.username, req.body.ID).then(function(result) {
-				console.log(result);
-				console.log("----------------------------")
 				if (result) {
+					mongolass._db.collection('fileinfos').remove({'username': req.body.username, 'ID': req.body.ID})
 					res.status(200).json({
 						'result': 'success',
 						'value': result

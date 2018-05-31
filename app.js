@@ -5,7 +5,8 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+const multer = require('multer');
+var multipart = require('connect-multiparty');
 var routes = require('./app/routes');
 
 var app = express();
@@ -15,14 +16,17 @@ var cors = require('cors')
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(cors());
+
 app.use(favicon());
 app.use(logger('dev'));
+app.use(multipart({uploadDir:'/var/www/static/upload' }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.all('/*', function(req, res, next) {
+
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
     res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');

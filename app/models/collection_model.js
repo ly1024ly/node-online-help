@@ -6,16 +6,16 @@ module.exports = {
 	/**
 	 * 保存收藏文件
 	 */
-	create_file: function(data){
-		console.log(data)
-		return mongolass._db.collection('collections').insert(data);
+	create_file: function(data){	
+		return mongolass._db.collection('collections').insert(data)
+		
 	},
 	/**
 	 * 查看收藏所有文件记录
 	 */
 	get_file_all: function(username){
 		let files = function(resolve, reject) {
-			mongolass._db.collection('collections').find({'username': username}).toArray(function(err, docs)  {
+			mongolass._db.collection('collections').find({'username': username}).sort({'timestamp':1}).toArray(function(err, docs)  {
 	        if (err) {
 	            reject(err);
 	        } else {

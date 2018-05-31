@@ -25,7 +25,11 @@ util.vercodedoesnotmatchuuid = { 'result': 'fail', 'errorno': 31, 'message': 'th
 util.openidhadbind = { 'result': 'fail', 'errorno': 32, 'message': 'had  bind openid' };
 util.saveerror = {'result': 'fail', 'errorno': 33, 'message': 'save in db error' };
 util.normalsuccess = { 'result': 'success' };
-
+util.operationfailed = {'result':'fail','message':'operation failed'};
+util.added = {'result':'fail','errorno': 34, 'message':'Has been added'};
+util.empty = {'result':'fail','errorno':35,'message':'Data is empty'};
+util.nodata = {'result':'fail','errorno':36,'message':'no data'};
+util.fileupload = {'result':'fail','errorno': 37,'message':'fail upload'}
 
 util.checkparas = (arr, data) => {
     var re = true;
