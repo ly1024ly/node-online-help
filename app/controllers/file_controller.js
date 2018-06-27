@@ -5,7 +5,9 @@ const multer = require('multer');
 let md5 = require('md5');
 let fs = require('fs');
 var mongolass = require('../../common_lib/db.js');
-
+var current = new Date().getTime() + 8 * 60 * 60 * 1000;
+      //然后转化为东八区，当前的时间;
+    var currents = new Date(current).toISOString().replace(/T/," ").substr(0,19);
 
 var storage = multer.diskStorage({
     destination: '/var/www/static/upload',
@@ -23,6 +25,9 @@ module.exports = {
 	 * 获得唯一编码 
 	 */
 	get_number: function(req, res){
+		var current = new Date().getTime() + 8 * 60 * 60 * 1000;
+      //然后转化为东八区，当前的时间;
+    var currents = new Date(current).toISOString().replace(/T/," ").substr(0,19);
 		var data = {'ID': 1, 'timestamp': new Date()};
 		var res_data = {'ID': 1, 'timestamp': new Date()};
 		file.get_number(data).then(function(result){
@@ -60,18 +65,15 @@ module.exports = {
 				res.status(200).json(util.servererror);
 			});
 		}else{
-			res.header("Access-Control-Allow-Origin", "*");
 			res.status(200).json(util.paramserror);
 		}
 	},
-
 	/**
 	 * 修改文件记录
 	 */
 	modify_file: function(req, res){
 		if (util.checkparas(['ID','status'], req.body)){
-			let data = new Date();
-			file.modify_file(req.body.ID,req.body.status,data).then(function(result){
+			file.modify_file(req.body.ID,req.body.status).then(function(result){
 				if(result){
 					res.status(200).json({
 						'result':'success',
@@ -115,10 +117,20 @@ module.exports = {
 	 */
 	all_file: function(req, res){
 		if (req.query){
-			file.all_file().then(function(result){
+			file.all_file(req.query.page).then(function(result){
 				if(result){
-					util.normalsuccess.value = result;
-					res.status(200).json(util.normalsuccess);
+				  
+			  	mongolass._db.collection('fileinfos').find({status:'上线'}).count().then(function(data){
+			  		console.log(data)
+						if(data){
+							console.log(data)
+							util.normalsuccess.value = result;
+							util.normalsuccess.count = data;
+							res.status(200).json(util.normalsuccess);
+						}else {
+							res.status(200).json(util.nodata);
+						}
+					});
 				}else{
 					res.status(200).json(util.servererror);
 				}
@@ -176,8 +188,8 @@ module.exports = {
 	},
 	//查找文件
 	find_file: function(req,res){
-		if(util.checkparas(['ID'], req.body)){
-			file.find_file(req.body.ID).then(function(result){
+		if(util.checkparas(['ID','username'], req.body)){
+			file.find_file(req.body.ID,req.body.username).then(function(result){
 				if(result){
 					res.status(200).json({
 						'result':'success',
@@ -193,16 +205,27 @@ module.exports = {
 	},
 	//按照品牌，手册，手册号，摘要搜索
 	search_file: function(req,res){
-		if(util.checkparas(['str','type'],req.query)){
-			file.search_file(req.query.str,req.query.type).then(function(result){
+		if(util.checkparas(['str','type','page'],req.query)){
+			file.search_file(req.query.str,req.query.type,req.query.page).then(function(result){
 				if(result){
-					res.status(200).json({
-						'result':'success',
-						'value':result
-					});
+					mongolass._db.collection('fileinfos')
+						.find({$or:[{'html':{$regex:req.query.str,$options:'i'},'status':"上线"},{'ID':{$regex:req.query.str,$options:'i'},'status':"上线"},{'title':{$regex:req.query.str,$options:'i'},'status':"上线"},{'brand':{$regex:req.query.str,$options:'i'},'status':"上线"},{'product':{$regex:req.query.str,$options:'i'},'status':"上线"},{'abstract':{$regex:req.query.str,$options:'i'},'status':"上线"}]})
+						.count().then(function(data){
+							if(data||data==0){
+								res.status(200).json({
+									'result':'success',
+									'value':result,
+									'count':data
+								});
+							} else {
+								res.status(200).json(util.nodata);
+							}
+						})  
 				}else{
 					res.status(200).json(util.servererror);
 				}
+			}).catch(function(err){
+				res.status(200).json(util.servererror);
 			})
 		} else {
 			res.status(200).json(util.paramserror);
@@ -237,6 +260,26 @@ module.exports = {
 						'value':result
 					});
 				} else {
+					res.status(200).json(util.nodata);
+				}
+			}).catch(function(err){
+				res.status(200).json(util.servererror);
+			})
+		} else {
+			res.status(200).json(util.paramserror);
+		}
+	},
+	//通过id 搜索添加
+	findbyid: function(req,res){
+		console.log(req.query)
+		if(util.checkparas(['ID'],req.query)){
+			file.findbyid(req.query.ID).then(function(result){
+				if(result){
+					res.status(200).json({
+						'result':'success',
+						'value':result
+					});
+				}else{
 					res.status(200).json(util.nodata);
 				}
 			}).catch(function(err){

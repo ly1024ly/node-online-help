@@ -10,6 +10,7 @@ module.exports = {
 	 * 保存收藏文件
 	 */
 	create_file: function(req, res) {
+		console.log("lalala")
 		if (util.checkparas(['username', 'ID'], req.body)) {
 			collection.create_file(req.body).then(function(result) {
 				if (result) {
@@ -18,8 +19,8 @@ module.exports = {
 					res.status(200).json(util.added);
 				}
 			}).catch(function(err) {
-				console.log(err)
-				res.status(200).json(util.added);
+				
+				res.status(200).json(util.servererror);
 			});
 
 		} else {
@@ -57,6 +58,7 @@ module.exports = {
 		if (util.checkparas(['username', 'ID'], req.body)) {
 			collection.delete_file(req.body.username, req.body.ID).then(function(result) {
 				if (result) {
+					mongolass._db.collection('collections').updateMany({'ID': req.body.ID},{'$set':{status:"下线",changetime:new Date}})
 					mongolass._db.collection('fileinfos').remove({'username': req.body.username, 'ID': req.body.ID})
 					res.status(200).json({
 						'result': 'success',
@@ -71,6 +73,44 @@ module.exports = {
 			});
 
 		} else {
+			res.status(200).json(util.paramserror);
+		}
+	},
+	//排序
+	sort_file: function(req,res){
+		if(util.checkparas(['username','type'],req.query)){
+			collection.sort_file(req.query.username,req.query.type).then(function(result){
+				if(result){
+					res.status(200).json({
+						'result': 'success',
+						'value': result
+					});
+				}else {
+					res.status(200).json(util.servererror);
+				}
+			}).catch(function(err){
+				res.status(200).json(util.servererror);
+			})
+		} else {
+			res.status(200).json(util.paramserror);
+		}
+	},
+	//取消关注
+	modify_collection: function(req,res){
+		if(util.checkparas(['username','ID'],req.query)){
+			collection.modify_collection(req.query.username,req.query.ID).then(function(result){
+				if(result){
+					res.status(200).json({
+						'result': 'success',
+						'value': result
+					});
+				}else{
+					res.status(200).json(util.operationfailed);
+				}
+			}).catch(function(err){
+				res.status(200).json(util.servererror);
+			})	
+		}else{
 			res.status(200).json(util.paramserror);
 		}
 	}

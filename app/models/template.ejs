@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" rel="external nofollow" />
+    <title><%= title %></title>
+    <style>
+      body{
+        margin:0px;
+        padding:0px;
+        font-family: PingFangSC-Light,'helvetica neue',arial,'hiragino sans gb','microsoft yahei ui','microsoft yahei',simsun,sans-serif;
+        overflow-x: hidden;
+        height:100vh;
+      }
+      h2{
+        text-align: center;
+        color:#036;
+      }
+      #box{
+        width:100%;
+        min-height:100%;
+        padding:0px;
+        margin:0px;
+        position:relative;
+        overflow-x: hidden;
+      }
+      .content{
+        width：100%;
+        word-wrap:break-word;
+        padding:10px;
+        max-width:1000px;
+        height:auto;
+        color:#333;
+        margin:0 auto;
+        padding-bottom: 400px;
+      }
+      footer{
+        width:100%;
+        height:350px;
+        bottom: 0px;
+        left:0px;
+        position: absolute;
+        background: #607D8B;
+        padding-top:30px;
+       
+
+      }
+      .detail{
+        height: 75%;
+        width:1170px;
+        margin:0 auto;
+        
+      }
+      .mid{
+        width:1170px;
+        margin:0 auto;
+        height:60px;
+        line-height:59px;
+        border-top:1px solid #7f8790;
+        color:#fff;
+        opacity:0.6;
+        font-size: 18px;
+      }
+      .row{
+        width: 70%;
+        height: 100%;
+        color: #fff;
+        opacity: 0.8;
+        float: left;
+        margin: 0 auto;
+      }
+      .row div{
+        margin-top:10px;
+      }
+      #downPdf{
+        color:#fff;
+        text-decoration:none;
+      }
+      .abstract{
+        text-align: center;
+        color:#9e9e9e;
+        font-size: 14px;
+      }
+      .link,.file{
+        cursor:pointer;
+      }
+      .img{
+        float: left;
+        width: 25%;
+        text-align: center;
+        color:#fff;
+        margin-top: 10px;
+      }
+      .img img{
+        width:47%;
+      }
+      @media screen and (max-width: 780px) {
+        .detail{
+          width:100%;
+          margin:0 10px;
+        }
+        .row{
+          width:60%;
+        }
+        .mid{
+          width:auto;
+          margin:0 10px;
+          font-size: 14px;
+          line-height: 20px;
+        }
+        footer{
+          height:460px;
+        }
+        .content{
+          padding-bottom: 510px;
+        }
+        .content img{
+          width:100%!important;
+        }
+        .img img{
+          width:100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box">
+      <h2><%= title %></h2>
+      <div class="content">
+        <div class="abstract"><%= abstract %></div>
+        <p><%- html %></p>
+      </div>
+      <footer>
+        <div class="detail">
+          <div class="row">
+            <div>产品：<%= product %></div>
+            <div>品牌：<%= brand %></div>
+            <div>厂商：<%= manufacturer %></div>
+            <div>设备型号：<%= mechinetype %></div>
+            <a download="<%= file %>" href="https://nccloud.weihong.com.cn/static/upload/helpdoc/<%= orifile %>" target="blank" id="downPdf" >
+              <div class="file" onclick="window.d">附件：<%= file %></div>
+            </a>
+            <div>标签：<%= tag %></div>
+            <div onclick="window.openwin()" class="link">原文链接：<span id="url"><%= link %></span></div>
+          </div>
+          <div class="img">
+            <img src="./logo.jpg" />
+            <div>扫码关注</div>
+          </div>
+        </div>
+        <div class="mid">
+          微信关注 "维宏云" 或登录nccloud.weihong.com.cn查看更多文档手册，体验更多工厂管理模式！
+        </div>
+      </footer>
+    <div>
+      <script type="text/javascript">
+        window.onload = function(){
+          var height = window.screen.height + "px";
+          //document.querySelector("body").style.height = height;
+          window.openwin = function(){
+            var url = document.querySelector("#url").innerText;
+            window.open(url)
+          }
+          window.d = function(){
+            console.log(file)
+            let link = document.getElementById('downPdf');
+            link.style.display = 'none'
+            
+            link.download = '';
+            link.target = "blank";
+            link.click()
+          }
+        }
+      </script>
+  </body>
+</html>

@@ -29,7 +29,9 @@ util.operationfailed = {'result':'fail','message':'operation failed'};
 util.added = {'result':'fail','errorno': 34, 'message':'Has been added'};
 util.empty = {'result':'fail','errorno':35,'message':'Data is empty'};
 util.nodata = {'result':'fail','errorno':36,'message':'no data'};
-util.fileupload = {'result':'fail','errorno': 37,'message':'fail upload'}
+util.fileupload = {'result':'fail','errorno': 37,'message':'fail upload'};
+util.publishfail = {'result':'fail','errorno':38,'message':'publish fail'};
+util.noauth = {'result':'fail','errorno':39,'message':'no auth'};
 
 util.checkparas = (arr, data) => {
     var re = true;
