@@ -16,6 +16,7 @@
       h2{
         text-align: center;
         color:#036;
+        word-break: break-all;
       }
       #box{
         width:100%;
@@ -24,6 +25,34 @@
         margin:0px;
         position:relative;
         overflow-x: hidden;
+        
+      }
+      #check{
+        width:100%;
+        min-height:100%;
+        padding:0px;
+        margin:0px;
+        position:relative;
+        overflow-x: hidden;
+      }
+      #check .title{
+        color:orange;
+        margin-top: 10%;
+      }
+      #check #sharecode{
+        height: 25px;
+        border-radius: 5px;
+        outline: none;
+      }
+      #check #comfirm{
+        background: orange;
+        color: #fff;
+        outline: none;
+        height: 29px;
+        border: none;
+      }
+      #check p{
+        text-align: center;
       }
       .content{
         width：100%;
@@ -95,6 +124,9 @@
       .img img{
         width:47%;
       }
+      #type,#recode{
+        display:none;
+      }
       @media screen and (max-width: 780px) {
         .detail{
           width:100%;
@@ -125,6 +157,10 @@
     </style>
   </head>
   <body>
+    <div id="check">
+      <p class="title">该手册需要分享码才能查看</p>
+      <p>请输入分享码：<input type="text" id="sharecode"/><input type="button" value="确定" id="comfirm"/><p id="error"></p><span id="type"><%= secrecy_type %></span><span id="recode"><%= sharecode %></span></p>
+    </div>
     <div id="box">
       <h2><%= title %></h2>
       <div class="content">
@@ -137,7 +173,7 @@
             <div>产品：<%= product %></div>
             <div>品牌：<%= brand %></div>
             <div>厂商：<%= manufacturer %></div>
-            <div>设备型号：<%= mechinetype %></div>
+            <div>型号：<%= mechinetype %></div>
             <a download="<%= file %>" href="https://nccloud.weihong.com.cn/static/upload/helpdoc/<%= orifile %>" target="blank" id="downPdf" >
               <div class="file" onclick="window.d">附件：<%= file %></div>
             </a>
@@ -154,14 +190,40 @@
         </div>
       </footer>
     <div>
+      </script>
       <script type="text/javascript">
         window.onload = function(){
+      
+          var secrecy_type = document.getElementById("type").innerText;
+          console.log(secrecy_type)
+          var box = document.getElementById("box");
+          var check = document.getElementById("check");
+          if(secrecy_type=="secret_sharecode"){
+            document.getElementById("box").style.display = "none";
+            document.getElementById("check").style.display = "block";
+          }else {
+            document.getElementById("box").style.display = "block";
+            document.getElementById("check").style.display = "none";
+          }
           var height = window.screen.height + "px";
           //document.querySelector("body").style.height = height;
           window.openwin = function(){
             var url = document.querySelector("#url").innerText;
             window.open(url)
           }
+          document.getElementById("comfirm").addEventListener("click",function(event){
+            var share = document.getElementById("sharecode").value;
+            console.log(share);
+            var recode = document.getElementById("recode").innerText;
+            if(recode == share){
+              document.getElementById("box").style.display = "block";
+              document.getElementById("check").style.display = "none";
+            }else {
+              document.getElementById("box").style.display = "none";
+              document.getElementById("check").style.display = "block";
+              document.getElementById("error").innerText = "您的分享码错误，请重新输入..."
+            }
+          })
           window.d = function(){
             console.log(file)
             let link = document.getElementById('downPdf');

@@ -11,7 +11,7 @@ let UUID = require("uuid");
 
 var storage = multer.diskStorage({
     destination: "/var/www/static/upload/helpdoc/",
-
+    //destination:'E:\\xampp\\htdocs\\',
     filename: function (req, file, cb) {
         let newname = UUID.v1();
         newname = newname + "." + file.originalname.split('.')[1];
@@ -50,13 +50,13 @@ module.exports = {
         files.publishFile(req.body.ID,req.body.title).then(function(result){
             if(result){
                 let newname = UUID.v1();
-                let file =fs.writeFile("/var/www/static/upload/helpdoc/" + newname +  req.body.title+".html",result,function(err){
+                let file =fs.writeFile("/var/www/static/upload/helpdoc/" + newname +".html",result,function(err){
                     if(err){
                         throw err
                     } else {
-                        mongolass._db.collection('collections').update({ID:req.body.ID},{'$set':{pubhtml:newname +  req.body.title+".html"}}).then(result1 => {
+                        mongolass._db.collection('collections').update({ID:req.body.ID},{'$set':{pubhtml:newname +  ".html?ID="+req.body.ID}}).then(result1 => {
                             if(result1){
-                                mongolass._db.collection('fileinfos').update({ID:req.body.ID},{'$set':{pubhtml:newname +  req.body.title+".html"}}).then(result2 => {
+                                mongolass._db.collection('fileinfos').update({ID:req.body.ID},{'$set':{pubhtml:newname +  ".html?ID="+req.body.ID}}).then(result2 => {
                                     if(result2){
                                         res.status(200).json({
                                             'result':'success',

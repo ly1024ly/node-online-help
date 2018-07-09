@@ -8,11 +8,9 @@ deviceapi.index({ sharecode: 1 }, { unique: true }).exec();
 
 var changebook = function(val){
     if(val.status == "update"){
-      console.log("update=="+val.sharecode)
       return mongolass._db.collection('code').update({'sharecode':val.sharecode},{'$set':{books:val.books}})
           
     }else if(val.status == "insert"){
-      console.log("insert=="+val.sharecode)
       return mongolass._db.collection('code').insert(val)
     }
   }

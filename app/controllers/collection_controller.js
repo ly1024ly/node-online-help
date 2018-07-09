@@ -3,14 +3,14 @@ const collection = require('../models/collection_model.js');
 const file = require('../models/file_model.js');
 const util = require('../../common_lib/util');
 var mongolass = require('../../common_lib/db.js');
-
+let UUID = require("uuid");
+var fs = require("fs");
 
 module.exports = {
 	/**
 	 * 保存收藏文件
 	 */
 	create_file: function(req, res) {
-		console.log("lalala")
 		if (util.checkparas(['username', 'ID'], req.body)) {
 			collection.create_file(req.body).then(function(result) {
 				if (result) {
@@ -58,8 +58,8 @@ module.exports = {
 		if (util.checkparas(['username', 'ID'], req.body)) {
 			collection.delete_file(req.body.username, req.body.ID).then(function(result) {
 				if (result) {
-					mongolass._db.collection('collections').updateMany({'ID': req.body.ID},{'$set':{status:"下线",changetime:new Date}})
-					mongolass._db.collection('fileinfos').remove({'username': req.body.username, 'ID': req.body.ID})
+					mongolass._db.collection('collections').updateMany({'ID': req.body.ID},{'$set':{status:0,changetime:new Date}})
+					mongolass._db.collection('fileinfos').remove({'username': req.body.username, 'ID': req.body.ID});
 					res.status(200).json({
 						'result': 'success',
 						'value': result

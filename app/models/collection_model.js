@@ -1,6 +1,6 @@
 'use strict';
 var mongolass = require('../../common_lib/db.js');
-
+let fs = require("fs");
 
 module.exports = {
 	/**
@@ -35,20 +35,34 @@ module.exports = {
   	return new Promise(files)
   },
 	/**
-	 * 删除收藏文件记录
+	 * 删除单个文件记录
 	 */
 	delete_file: function(username, ID){
 		//let files = function(resolve, reject){
-			
-		return mongolass._db.collection('collections').remove({'username': username, 'ID': ID})
-		// 		if(err){
-		// 			reject(err);
-		// 		} else {
-		// 			resolve(docs)
-		// 		}
-		// 	});
-		// }
-		// return new Promise(files)
+		var p1 = new Promise((resolve, reject) => {
+			mongolass._db.collection("collections").findOne({'ID':ID}).then(find => {
+				if(find.pubhtml!==''){
+					try{
+	        	fs.unlinkSync("/var/www/static/upload/helpdoc/"+find.pubhtml.split("?")[0])
+
+	        	resolve(true)
+	        }catch(err){
+	        	reject(false)
+	        }
+	      }else {
+	      	
+	      }
+			});	
+		})
+		return p1.then(res => {
+			if(res){
+				return mongolass._db.collection('collections').remove({'username': username, 'ID': ID})
+			}else{
+				return false
+			}
+		})
+		
+		
 	},
 	//排序
 	sort_file: function(username,type){
